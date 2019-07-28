@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--<link rel="stylesheet" href="css/main.css">-->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <title>Public School Buses</title>
+    <link href="website-profile-pic">
+    <link href="fun-photo">
+    <link href="https://fonts.googleapis.com/css?family=Average|Fjalla+One|Fira+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+<style>
+#navbar {
+  width: 100%;
+  height: 32px;
+  overflow: hidden;
+  border: 2px white;
+  box-shadow: 2px 2px 4px #787878;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding-top: 8px;
+    float: right;  
+}
+
+li {
+      display: inline;
+}
+
+li a {
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+li a:hover {
+  background-color: rgb(184, 90, 216);
+  border-radius: 15px;
+}
+</style>   
+
+<header id="navbar">
+    <ul>
+    <li><a href="analysisBus.html">analysis</a></li>
+    <li><a href="aboutThisProjectBus.html">about this project</a></li>
+    <li><a class="active" href="index.html">home</a></li>
+    </ul>
+</header> 
+
+<body>  
+<style>
+  .bar:hover {
+    fill: lightpink;
+  }
+  h1 {
+    text-align: center;
+    font-family: 'Fjalla One', sans-serif;
+  } 
+  .barchart {
+    
+  }
+  svg {
+      margin: auto;
+      padding: 20px;
+      display: block;
+      background-color: cadetblue;
+      font-family: 'Average', serif;
+      border-radius: 30px;
+  }
+</style>
+
+<h1>Count of School Bus Delays in NYC Public Schools</h1>
+<div class="barchart"></div>
+  <script>
+    const dataset = [
+        ["2015-16", 63184], 
+        ["2016-17", 83141], 
+        ["2017-18", 89434], 
+        ["2018-19", 73956]
+    ];
+    
+    const w = 800;
+    const h = 500;
+    const bargap = 20;
+    const padding = 50;
+    const barwidth = ((w-padding-bargap)/dataset.length)-bargap;
+    
+    const yScale = d3.scaleLinear()
+        .domain([0, d3.max(dataset, (d) => d[1])])
+        .range([h-padding, 0]);
+    
+    const svg = d3.select(".barchart")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+    
+    svg.selectAll("rect")
+       .data(dataset)
+       .enter()
+       .append("rect")
+       .attr("x", (d, i) => bargap + i * (barwidth + bargap) + padding)
+       .attr("y",(d) => yScale(d[1]))
+       .attr("width", barwidth)
+       .attr("height", (d, i) => h - yScale(d[1]) - padding)
+       .attr("fill", "navy")
+       .attr("class", "bar")
+       .append("title")
+        .text((d => d[1]));
+
+    // x axis
+    svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("x", (d, i) => 3.5 * bargap + i * (barwidth + bargap) + padding)
+        .attr("y", h - padding/2)
+        // .attr("dy", ".35em")
+        .text(function(d, i) { return d[0]; });  
+
+    // y axis
+    svg.append("g")
+        .attr("transform", "translate(50 0)")
+        .call(d3.axisLeft().scale(yScale));
+    </script>
+</body>
